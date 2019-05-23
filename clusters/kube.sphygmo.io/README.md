@@ -38,7 +38,8 @@ You should see the following if you run the `env` command in the command line:
 
 ### 4. Switch to use terraform plan
 
-    ./terraform_init.sh
+    cp ./.terraform/backend.tf ./output/terraform/
+    terraform init -backend-config="key=terraform/${KOPS_NAME}/terraform.tfstate" -backend-config="bucket=${KOPS_BUCKET}" output/terraform/
     terraform plan -out output/terraform/create_plan output/terraform
 
 ### 5. Apply the plan 
@@ -49,11 +50,14 @@ You should see the following if you run the `env` command in the command line:
 ## To destroy
 
 ### 1. Generate a destroy plan
+
     terraform plan -destroy -out output/terraform/destroy_plan output/terraform
 
 
 ### 2. Apply the destroy plan
+
     terraform apply output/terraform/destroy_plan 
 
 ### 3. Clean up kops registry
+
     kops delete cluster --unregister --name $KOPS_NAME --yes
