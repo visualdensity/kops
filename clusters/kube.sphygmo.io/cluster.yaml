@@ -1,0 +1,156 @@
+apiVersion: kops/v1alpha2
+kind: Cluster
+metadata:
+  creationTimestamp: null
+  name: kube.sphygmo.io
+spec:
+  addons:
+  - manifest: s3://vd-kops-state-store/contrib/kops-addons/addon.yml
+  api:
+    loadBalancer:
+      type: Public
+  authorization:
+    rbac: {}
+  channel: stable
+  cloudProvider: aws
+  configBase: s3://vd-kops-state-store/kops/kube.sphygmo.io
+  etcdClusters:
+  - cpuRequest: 200m
+    etcdMembers:
+    - instanceGroup: master-ap-southeast-2a
+      name: a
+    memoryRequest: 100Mi
+    name: main
+  - cpuRequest: 100m
+    etcdMembers:
+    - instanceGroup: master-ap-southeast-2a
+      name: a
+    memoryRequest: 100Mi
+    name: events
+  iam:
+    allowContainerRegistry: true
+    legacy: false
+  kubelet:
+    anonymousAuth: false
+    authenticationTokenWebhook: true # Used by metrics-server and github auth
+    authorizationMode: Webhook
+    evictionMinimumReclaim: nodefs.available=10%,imagefs.available=10%
+    ImageGCLowThresholdPercent: 50
+    ImageGCHighThresholdPercent: 65
+  kubernetesApiAccess:
+  - 0.0.0.0/0
+  kubernetesVersion: 1.13.5
+  masterPublicName: api.kube.sphygmo.io
+  networkCIDR: 172.20.0.0/16
+  networking:
+    canal: {}
+  nonMasqueradeCIDR: 100.64.0.0/10
+  sshAccess:
+  - 0.0.0.0/0
+  subnets:
+  - cidr: 172.20.32.0/19
+    name: ap-southeast-2a
+    type: Private
+    zone: ap-southeast-2a
+  - cidr: 172.20.64.0/19
+    name: ap-southeast-2b
+    type: Private
+    zone: ap-southeast-2b
+  - cidr: 172.20.0.0/22
+    name: utility-ap-southeast-2a
+    type: Utility
+    zone: ap-southeast-2a
+  - cidr: 172.20.4.0/22
+    name: utility-ap-southeast-2b
+    type: Utility
+    zone: ap-southeast-2b
+  topology:
+    bastion:
+      bastionPublicName: bastion.kube.sphygmo.io
+    dns:
+      type: Public
+    masters: private
+    nodes: private
+  kubeDNS:
+    provider: CoreDNS
+  kubeProxy:
+    proxyMode: ipvs
+    ipvsScheduler: lc
+  kubeAPIServer:
+    admissionControl:
+    - NamespaceLifecycle
+    - LimitRanger
+    - ServiceAccount
+    - PersistentVolumeLabel
+    - DefaultStorageClass
+    - DefaultTolerationSeconds
+    - MutatingAdmissionWebhook
+    - ValidatingAdmissionWebhook
+    - ResourceQuota
+    - NodeRestriction
+    - Priority
+  kubeControllerManager:
+    horizontalPodAutoscalerDownscaleDelay: 3m0s
+    horizontalPodAutoscalerUpscaleDelay: 2m0s
+
+---
+
+apiVersion: kops/v1alpha2
+kind: InstanceGroup
+metadata:
+  creationTimestamp: null
+  labels:
+    kops.k8s.io/cluster: kube.sphygmo.io
+  name: master-ap-southeast-2a
+spec:
+  image: kope.io/k8s-1.12-debian-stretch-amd64-hvm-ebs-2019-05-13
+  machineType: t2.medium
+  maxSize: 1
+  minSize: 1
+  nodeLabels:
+    kops.k8s.io/instancegroup: master-ap-southeast-2a
+  role: Master
+  subnets:
+  - ap-southeast-2a
+
+---
+
+apiVersion: kops/v1alpha2
+kind: InstanceGroup
+metadata:
+  creationTimestamp: null
+  labels:
+    kops.k8s.io/cluster: kube.sphygmo.io
+  name: nodes
+spec:
+  image: kope.io/k8s-1.12-debian-stretch-amd64-hvm-ebs-2019-05-13
+  machineType: t2.small
+  maxSize: 2
+  minSize: 1
+  nodeLabels:
+    kops.k8s.io/instancegroup: nodes
+  role: Node
+  subnets:
+  - ap-southeast-2a
+  - ap-southeast-2b
+
+---
+
+apiVersion: kops/v1alpha2
+kind: InstanceGroup
+metadata:
+  creationTimestamp: null
+  labels:
+    kops.k8s.io/cluster: kube.sphygmo.io
+  name: bastions
+spec:
+  image: kope.io/k8s-1.12-debian-stretch-amd64-hvm-ebs-2019-05-13
+  machineType: t2.micro
+  maxSize: 1
+  minSize: 1
+  nodeLabels:
+    kops.k8s.io/instancegroup: bastions
+  role: Bastion
+  subnets:
+  - utility-ap-southeast-2a
+  - utility-ap-southeast-2b

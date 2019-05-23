@@ -1,0 +1,1 @@
+This addons installs metrics-server (successor to heapster) to implement the `v1beta1.metrics.k8s.io` API

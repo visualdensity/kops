@@ -1,0 +1,5 @@
+export NAME=kube.sphygmo.io
+export KOPS_NAME=kube.sphygmo.io
+export KOPS_BUCKET=vd-kops-state-store
+export KOPS_STATE_STORE=s3://$KOPS_BUCKET/kops
+export AWS_PROFILE=vd
