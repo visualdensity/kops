@@ -5,7 +5,7 @@ metadata:
   name: kube.sphygmo.io
 spec:
   addons:
-  - manifest: s3://vd-kops-state-store/contrib/kops-addons/addon.yml
+  - manifest: s3://vd-kops-state-store/contrib/kops-addons/addon.yaml
   api:
     loadBalancer:
       type: Public
