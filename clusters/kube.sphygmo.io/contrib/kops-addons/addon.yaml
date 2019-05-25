@@ -8,3 +8,8 @@ spec:
     selector:
       k8s-addon: metrics-server
     manifest: metrics-server/v1.8.1.yaml
+  - name: nginx-ingress
+    version: 1.7.0
+    selector:
+      k8s-addon: nginx-ingress
+    manifest: nginx-ingress/nginx-ingress.yaml
