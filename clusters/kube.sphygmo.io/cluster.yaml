@@ -9,6 +9,7 @@ spec:
   api:
     loadBalancer:
       type: Public
+      sslCertificate: arn:aws:acm:ap-southeast-2:870753178055:certificate/3641c8a6-3cb5-4789-b0f0-c4b82014c021
   authorization:
     rbac: {}
   channel: stable
