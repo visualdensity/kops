@@ -10,9 +10,3 @@ spec:
       - backend:
           serviceName: web-svc
           servicePort: 80
-  - host: web.kube.sphygmo.io
-    http:
-      paths:
-      - backend:
-          serviceName: web-svc
-          servicePort: 80
