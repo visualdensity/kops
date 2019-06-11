@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -eo pipefail
+
 if [ -d "./output/terraform" ]; then
     cp ./.terraform/backend.tf ./output/terraform/
 fi

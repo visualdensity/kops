@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -eo pipefail
+
 echo "This is going to create $KOPS_NAME cluster. Are you absolutely sure? (y/n)"
 read yn
 

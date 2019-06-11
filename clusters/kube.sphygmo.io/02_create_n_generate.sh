@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -eo pipefail
+
 echo "Creating cluster config from cluster.yaml..."
 kops create -f cluster.yaml
 
