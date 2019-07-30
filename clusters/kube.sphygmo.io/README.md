@@ -49,15 +49,27 @@ You should see the following if you run the `env` command in the command line:
 
 ## To destroy
 
-### 1. Generate a destroy plan
+### 1. Remove Ingress Services
+
+    kubectl delete svc ingress-controller -n ingress-nginx 
+
+### 2. Generate a destroy plan
 
     terraform plan -destroy -out output/terraform/destroy_plan output/terraform
 
 
-### 2. Apply the destroy plan
+### 3. Apply the destroy plan
 
     terraform apply output/terraform/destroy_plan 
 
-### 3. Clean up kops registry
+### 4. Clean up kops registry
+
+    kops delete cluster --unregister --name $KOPS_NAME --yes
+
+### 5. Remove all artifacts
+
+    ./99_reset.sh 
+
+
 
     kops delete cluster --unregister --name $KOPS_NAME --yes
